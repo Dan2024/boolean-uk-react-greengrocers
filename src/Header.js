@@ -27,7 +27,7 @@ export default function Header({ storeItems, addToCart }) {
   return (
     <header id="store">
       <h1>Greengrocers</h1>
-      {/* {foodFilter} */}
+
       <div>
         <label>filter by food type </label>
         <select
