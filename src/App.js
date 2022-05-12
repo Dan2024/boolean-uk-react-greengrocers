@@ -11,30 +11,15 @@ export default function App() {
   const [storeItems, setStoreItems] = useState(initialStoreItems)
   const [cart, setCart] = useState([])
 
-  function updateCart(newItem) {
-    if (newItem) {
-      if (Array.isArray(newItem)) {
-        // replace cart
-        setCart([...newItem])
-      } else {
-        // add item to cart
-        setCart([...cart, newItem])
-      }
-    } else {
-      // replace cart with self (for react to know chnage has happened)
-      setCart([...cart])
-    }
-  }
-
   function addToCart(storeItem) {
     const itemInCart = cart.find(i => i.storeItem.name === storeItem.name)
 
     if (!itemInCart) {
       const cartItem = { storeItem, quantity: 1 }
-      updateCart(cartItem)
+      setCart([...cart, cartItem])
     } else {
       itemInCart.quantity++
-      updateCart()
+      setCart([...cart])
     }
   }
 
@@ -47,17 +32,17 @@ export default function App() {
   function decreaseQuantity(item) {
     if (item.quantity > 1) {
       item.quantity--
-      updateCart()
+      setCart([...cart])
     } else {
       const newCart = cart.filter(i => i.storeItem.name !== item.storeItem.name)
 
-      updateCart(newCart)
+      setCart([...newCart])
     }
   }
 
   function increaseQuantity(item) {
     item.quantity++
-    updateCart()
+    setCart([...cart])
   }
 
   return (
