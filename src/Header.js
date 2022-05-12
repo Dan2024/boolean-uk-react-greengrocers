@@ -3,26 +3,40 @@ import { useState } from 'react'
 
 export default function Header({ storeItems, addToCart }) {
   const [foodFilter, setFoodFilter] = useState('select')
-  const [sort, setSort] = useState('select')
+  const [sortOrder, setSortOrder] = useState('select')
+  const [activeStoreItem, setActiveStoreItem] = useState(false)
 
-  function filterStoreItems(foodType) {
-    if (foodType === 'select') return storeItems
-    return storeItems.filter(item => item.type === foodType)
+  function filterStoreItems() {
+    if (foodFilter === 'select') return storeItems
+    return storeItems.filter(item => item.type === foodFilter)
   }
 
-  function sortStoreItems(filteredStore, sortParam) {
-    if (sortParam === 'select') return filteredStore
+  function sortStoreItems(filteredStore) {
+    if (sortOrder === 'select') return filteredStore
 
     let sortedStore = [...filteredStore]
-    if (sortParam === 'A - Z') {
+    if (sortOrder === 'A - Z') {
       sortedStore.sort((a, b) => (a.name > b.name ? 1 : -1))
       return sortedStore
     }
-    if (sortParam === 'Z - A') {
+    if (sortOrder === 'Z - A') {
       sortedStore.sort((a, b) => (a.name < b.name ? 1 : -1))
       return sortedStore
     }
   }
+
+  function filterAndSortItems() {
+    const filteredItems = filterStoreItems()
+    return sortStoreItems(filteredItems)
+  }
+
+  function setActiveItem(item) {
+    if (activeStoreItem === item) {
+      setActiveStoreItem(false)
+    } else setActiveStoreItem(item)
+  }
+
+  const itemsToDisplay = filterAndSortItems()
 
   return (
     <header id="store">
@@ -45,7 +59,7 @@ export default function Header({ storeItems, addToCart }) {
         <label>sort by name </label>
         <select
           onChange={e => {
-            setSort(e.target.value)
+            setSortOrder(e.target.value)
           }}
         >
           <option value="select">Select...</option>
@@ -56,10 +70,20 @@ export default function Header({ storeItems, addToCart }) {
 
       {/* store item list */}
       <ul className="item-list store--item-list">
-        {sortStoreItems(filterStoreItems(foodFilter), sort).map(item => (
-          <StoreItem key={item.id} item={item} addToCart={addToCart} />
+        {itemsToDisplay.map(item => (
+          <StoreItem
+            isActive={activeStoreItem === item}
+            setActiveStoreItem={item => setActiveItem(item)}
+            key={item.id}
+            item={item}
+            addToCart={addToCart}
+          />
         ))}
       </ul>
     </header>
   )
 }
+
+// keep state here which item active
+// change active state name
+// add comments
